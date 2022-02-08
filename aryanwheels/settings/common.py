@@ -2,23 +2,10 @@ import os
 from datetime import timedelta
 from pathlib import Path
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent
+
+BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
-
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-4d6w#q*q&j%2059kqunbsixgafc6*z&)#r77+bo27@k8t3ld46'
-
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
-
-ALLOWED_HOSTS = []
-
-
-# Application definition
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -31,23 +18,25 @@ INSTALLED_APPS = [
     'showroom',
     'core',
 
+    'corsheaders',
     'debug_toolbar',
-    'rest_framework',
     'django_filters',
-    'djoser'
+    'djoser',
+    'rest_framework',
 
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-
-    "debug_toolbar.middleware.DebugToolbarMiddleware",
 
 ]
 
@@ -72,22 +61,7 @@ TEMPLATES = [
 WSGI_APPLICATION = 'aryanwheels.wsgi.application'
 
 
-# Database
-# https://docs.djangoproject.com/en/4.0/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'aryanwheels',
-        'HOST':'localhost',
-        'USER':'root',
-        'PASSWORD':'root',
-    }
-}
-
-
-# Password validation
-# https://docs.djangoproject.com/en/4.0/ref/settings/#auth-password-validators
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -105,9 +79,6 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 
-# Internationalization
-# https://docs.djangoproject.com/en/4.0/topics/i18n/
-
 LANGUAGE_CODE = 'en-us'
 
 TIME_ZONE = 'UTC'
@@ -116,35 +87,31 @@ USE_I18N = True
 
 USE_TZ = True
 
-
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/4.0/howto/static-files/
-
 STATIC_URL = 'static/'
+STATIC_ROOT= os.path.join(BASE_DIR, 'static')
 
 MEDIA_URL= '/media/'
-
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-# Default primary key field type
-# https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 INTERNAL_IPS = ["127.0.0.1", ]
+
+CORS_ALLOWED_ORIGINS = [
+    
+]
 
 REST_FRAMEWORK = {
     'COERCE_DECIMAL_TO_STRING': False,
     
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
-    
     ),
-
-
-    # 'DEFAULT_PERMISSION_CLASSES':[
-    #     'rest_framework.permissions.IsAuthenticated'
-    # ]
+    'DEFAULT_PERMISSION_CLASSES':[
+        'rest_framework.permissions.IsAuthenticated'
+    ]
 }
+
 AUTH_USER_MODEL = 'core.User'
 
 SIMPLE_JWT = {
@@ -157,4 +124,33 @@ DJOSER = {
         'user_create':'core.serializers.UserCreateSerializer',
         'current_user':'core.serializers.UserSerializer'
     }
+}
+
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_logger': False,
+    'handlers': {
+        'console':{
+            'class': 'logging.StreamHandler'
+        },
+        'file': {
+            'class': 'logging.FileHandler',
+            'filename':'general.log',
+            'formatter':'verbose'
+        }
+    },
+    'loggers': {
+        '': {
+            'handlers': ['console','file'],
+            'level': os.environ.get('DJANGO_LOG_LEVEL','INFO')
+        }
+    },
+    'formatters': {
+        'verbose': {
+            'format': '{asctime} ({levelname}) - {name} - {message}',
+            'style':'{'
+        }
+    }
+
 }
