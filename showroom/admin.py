@@ -22,6 +22,9 @@ class VehiclesAdmin(admin.ModelAdmin):
 
     @admin.display(ordering='likes')
     def like_rate(self,vehicle):
+        if(vehicle.likes==None):
+            return 'Low rated vehicle'
+            
         if vehicle.likes <100:
             return 'Low rated vehicle'
         return 'High rated vehicle'

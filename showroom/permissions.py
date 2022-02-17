@@ -13,9 +13,9 @@ class MyVehicle(permissions.BasePermission):
     def has_permission(self, request, view):
         if request.method in ['GET','HEAD','OPTIONS']:
             return True
-        elif request.method == ['POST']:
-            return bool(request.user and (request.user.is_staff or request.user.is_authenticated))
-        return
+        # elif request.method == ['POST']:
+        return bool(request.user and bool(request.user.is_staff or request.user.is_authenticated))
+        
     def has_object_permission(self, request, view, obj):
         if request.method in['GET','HEAD','OPTIONS']:
             return True
