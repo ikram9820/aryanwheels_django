@@ -61,11 +61,8 @@ class UserAdmin(admin.ModelAdmin):
 
 
 
-
-
 @admin.register(models.Like)
 class LikeAdmin(admin.ModelAdmin):
-
     list_select_related= ['user']
 
 @admin.register(models.LikedItem)

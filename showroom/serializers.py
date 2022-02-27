@@ -1,3 +1,5 @@
+from asyncio.windows_events import NULL
+from dataclasses import fields
 from tkinter import Image
 from rest_framework import serializers
 
@@ -34,36 +36,68 @@ class VehiclesSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Vehicles
         fields = ['id','owner_id','owner','manufacturer', 'model','slug','model_year', 'price',
-                  'posting_date','distance_traveled','color','description','likes','images']
+                  'posting_date','distance_traveled','description','images']
   
     # def car_name(self,vehicle:models.Vehicles):
     #     return f'{vehicle.manufacturer}, {vehicle.model} {vehicle.model_year}'
 
     def create(self, validated_data):
-        return models.Vehicles.objects.create(owner_id=self.context['owner_id'],**validated_data)
+        owner_id=self.context['owner_id']
+        if(owner_id!=NULL):
+            return models.Vehicles.objects.create(owner_id=owner_id,**validated_data)
+        return NULL
  
 
 
-class SimpleVehicleSerializer(serializers.ModelSerializer):
-    images= ImageSerializer(read_only=True,many =True)
-    class Meta:
-        model= models.Vehicles
-        fields= ['id','model','model_year','price','posting_date','distance_traveled','color','description','likes','images']
+# class SimpleVehicleSerializer(serializers.ModelSerializer):
+#     images= ImageSerializer(read_only=True,many =True)
+#     class Meta:
+#         model= models.Vehicles
+#         fields= ['id','model','model_year','price','posting_date','distance_traveled','color','description','likes','images']
 
+
+class FollowSerializer(serializers.ModelSerializer):
+
+    user_id= serializers.IntegerField(read_only=True)
+    seller_id= serializers.IntegerField(read_only=True)
+    class Meta:
+        model= models.Follow
+        fields= ['id','user_id','seller_id']
+
+    def validate_seller_id(self,value):
+        if not models.Seller.objects.filter(pk=value).exists():
+            raise serializers.ValidationError("This user has no seller account")
+        return value 
+
+    def save(self, **kwargs):
+        user= self.context['user_id']
+        seller= self.context['seller_id']
+        if not models.Seller.objects.filter(pk=seller).exists():
+            raise serializers.ValidationError("This user has no seller account")
+        try:
+            follow= models.Follow.objects.get(user_id=user,seller_id=seller)
+            follow.delete()
+            self.instance= follow
+        except models.Follow.DoesNotExist:
+            self.instance= models.Follow.objects.create(user_id=user,seller_id=seller)
+
+        return self.instance
 
 
 class SellerSerializer(serializers.ModelSerializer):
     user= serializers.StringRelatedField(read_only=True)
-    vehicles= SimpleVehicleSerializer(read_only= True,many= True)
+    vehicles= VehiclesSerializer(read_only= True,many= True)
+    post_count= serializers.IntegerField(source= 'vehicles.count',read_only= True)
+    followers= serializers.IntegerField(source= 'following.count',read_only= True)
     class Meta:
         model = models.Seller
-        fields = ['id','user', 'whatsapp_contact','address','city','country','vehicles']
+        fields = ['id','user', 'whatsapp_contact','address','city','country','post_count','followers','bio','vehicles',]
 
-
+    
 
 
 class LikedItemSerializer(serializers.ModelSerializer):
-    vehicle= SimpleVehicleSerializer(read_only=True)
+    vehicle= VehiclesSerializer(read_only=True)
     vehicle_id= serializers.IntegerField(write_only=True)
                                             
     class Meta:

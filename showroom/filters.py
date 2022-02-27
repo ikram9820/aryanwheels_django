@@ -6,5 +6,4 @@ class VehicleFilter(FilterSet):
         fields= {
             'owner_id': ['exact'],
             'price': ['gt','lt'],
-            'likes':['gt','lt']
         }

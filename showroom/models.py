@@ -1,3 +1,4 @@
+from platform import release
 from uuid import uuid4
 from wsgiref.validate import validator
 from django.db import models
@@ -9,11 +10,12 @@ from .validators import validate_file_size
 
 class Seller(models.Model):
     user = models.OneToOneField(
-        settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE,related_name='seller')
     whatsapp_contact = models.IntegerField(blank=True, null=True)
-    address = models.CharField(max_length=255, blank=True, null=True)
+    address = models.CharField(max_length=255)
     city = models.CharField(max_length=255)
-    country = models.CharField(max_length=255)
+    country = models.CharField(max_length=255, blank=True, null=True)
+    bio= models.TextField(blank=True, null=True)
 
     def __str__(self) -> str:
         return f'{self.user.first_name} {self.user.last_name}'
@@ -21,6 +23,9 @@ class Seller(models.Model):
     class Meta:
         ordering = ['user__first_name', 'user__last_name', 'user__date_joined']
 
+class Follow(models.Model):
+    user=models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.CASCADE,related_name='follower')
+    seller=models.ForeignKey(Seller,on_delete=models.CASCADE,related_name='following')
 
 class Vehicles(models.Model):
     VEHICLES_TYPE_TRUCK = 'T'
@@ -46,18 +51,16 @@ class Vehicles(models.Model):
         validators=[MinValueValidator(1970), MaxValueValidator(2023)])
     distance_traveled = models.DecimalField(
         max_digits=8, decimal_places=0, blank=True, null=True)
-    color = models.CharField(max_length=255, blank=True, null=True)
     price = models.DecimalField(
         max_digits=9, decimal_places=0, validators=[MinValueValidator(0)])
     posting_date = models.DateTimeField(auto_now_add=True)
     description = models.TextField(blank=True, null=True)
-    likes = models.IntegerField(blank=True, null=True)
 
     def __str__(self) -> str:
         return f'{self.manufacturer} {self.model} {self.model_year}'
 
     class Meta:
-        ordering = ['model', 'distance_traveled']
+        ordering = ['posting_date']
 
 
 class VehicleImage(models.Model):
