@@ -1,6 +1,3 @@
-from asyncio.windows_events import NULL
-from dataclasses import fields
-from tkinter import Image
 from rest_framework import serializers
 
 from . import models
@@ -43,9 +40,9 @@ class VehiclesSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         owner_id=self.context['owner_id']
-        if(owner_id!=NULL):
+        if(owner_id!=None):
             return models.Vehicles.objects.create(owner_id=owner_id,**validated_data)
-        return NULL
+        return None
  
 
 

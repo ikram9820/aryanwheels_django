@@ -1,5 +1,3 @@
-from django.conf import settings
-from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
 from django.core.exceptions import ObjectDoesNotExist
 from rest_framework.decorators import action
@@ -33,7 +31,7 @@ class VehiclesViewSet(ModelViewSet):
             try:
                 return { 'owner_id': self.request.user.seller.id}
             except ObjectDoesNotExist:
-                return {'owner_id': NULL}
+                return {'owner_id': None}
         return {'request': self.request}
 
 

@@ -1,6 +1,4 @@
-from platform import release
 from uuid import uuid4
-from wsgiref.validate import validator
 from django.db import models
 from django.conf import settings
 from django.core.validators import MinValueValidator, MaxValueValidator
