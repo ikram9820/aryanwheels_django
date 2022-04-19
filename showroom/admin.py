@@ -10,7 +10,7 @@ class VehiclesAdmin(admin.ModelAdmin):
     prepopulated_fields = {
         'slug':['model']
     }
-    list_display= ['id','car_name','owner','price','vehicles_type','like_rate']
+    list_display= ['id','car_name','owner','price','vehicles_type']
     list_editable= ['price','vehicles_type']
     list_filter=['vehicles_type','posting_date']
     list_per_page= 10
@@ -20,14 +20,14 @@ class VehiclesAdmin(admin.ModelAdmin):
     def car_name(self,vehicle):
         return f'{vehicle.manufacturer}, {vehicle.model} {vehicle.model_year}'
 
-    @admin.display(ordering='likes')
-    def like_rate(self,vehicle):
-        if(vehicle.likes==None):
-            return 'Low rated vehicle'
+    # @admin.display(ordering='likes')
+    # def like_rate(self,vehicle):
+    #     if(vehicle.likes==None):
+    #         return 'Low rated vehicle'
             
-        if vehicle.likes <100:
-            return 'Low rated vehicle'
-        return 'High rated vehicle'
+    #     if vehicle.likes <100:
+    #         return 'Low rated vehicle'
+    #     return 'High rated vehicle'
 
 @admin.register(models.VehicleImage)
 class VehicleImageAdmin(admin.ModelAdmin):

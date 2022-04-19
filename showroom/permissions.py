@@ -7,7 +7,6 @@ class IsAdminOrReadOnly(permissions.BasePermission):
         return bool(request.user and request.user.is_staff)
 
 
-
 class MyVehicle(permissions.BasePermission):
 
     def has_permission(self, request, view):

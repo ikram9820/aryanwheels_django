@@ -93,8 +93,7 @@ class SellerSerializer(serializers.ModelSerializer):
         model = models.Seller
         fields = ['id','user', 'whatsapp_contact','address','city','country','post_count','followers','bio','vehicles',]
 
-    
-
+  
 
 class LikedItemSerializer(serializers.ModelSerializer):
     vehicle= VehiclesSerializer(read_only=True)

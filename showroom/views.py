@@ -1,4 +1,3 @@
-from asyncio.windows_events import NULL
 from django.conf import settings
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
@@ -63,7 +62,7 @@ class SellerViewSet(ModelViewSet):
     queryset = models.Seller.objects.prefetch_related(
         'vehicles__images').select_related('user').all()
     serializer_class = serializers.SellerSerializer
-    permission_classes = [IsAdminOrReadOnly]
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
     @action(detail=False, methods=['GET', 'PUT'], permission_classes=[permissions.IsAuthenticated])
     def me(self, request):
@@ -78,7 +77,8 @@ class SellerViewSet(ModelViewSet):
             serializer.is_valid(raise_exception=True)
             serializer.save()
             return Response(serializer.data)
-
+    
+    
 
 class FollowViewSet(mixins.RetrieveModelMixin,
                     mixins.ListModelMixin,

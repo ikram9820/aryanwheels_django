@@ -1,7 +1,9 @@
 import os
 from datetime import timedelta
 from pathlib import Path
-
+import socket
+hostname, _, ips = socket.gethostbyname_ex(socket.gethostname())
+INTERNAL_IPS = [ip[:-1] + "1" for ip in ips]
 
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
@@ -23,6 +25,7 @@ INSTALLED_APPS = [
     'django_filters',
     'djoser',
     'rest_framework',
+    "storages",
 
 ]
 
@@ -95,7 +98,6 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-INTERNAL_IPS = ["127.0.0.1", ]
 
 CORS_ALLOWED_ORIGINS = [
     

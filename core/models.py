@@ -1,5 +1,3 @@
-import email
-from wsgiref.validate import validator
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from .validators import validate_file_size

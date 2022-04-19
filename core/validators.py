@@ -4,4 +4,4 @@ def validate_file_size(file):
     max_size_kb= 5000
 
     if file.size >max_size_kb *1024:
-        raise ValidationError(f'Image can not be larger than {max_size_kb/1000}mb')
+        raise ValidationError(f'Image can not be larger than {max_size_kb/1024}mb')

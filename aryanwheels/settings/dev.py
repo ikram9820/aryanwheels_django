@@ -1,4 +1,3 @@
-import imp
 from .common import *
 
 
@@ -10,10 +9,11 @@ ALLOWED_HOSTS = ['10.0.2.2','127.0.0.1']
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'aryanwheels',
-        'HOST':'localhost',
-        'USER':'root',
-        'PASSWORD':'root',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'postgres',
+        'USER': 'postgres',
+        'PASSWORD': 'postgres',
+        'HOST': 'db',
+        'PORT': 5432
     }
 }
