@@ -9,7 +9,7 @@ from .validators import validate_file_size
 class Seller(models.Model):
     user = models.OneToOneField(
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE,related_name='seller')
-    whatsapp_contact = models.IntegerField(blank=True, null=True)
+    whatsapp_contact = models.BigIntegerField(blank=True, null=True)
     address = models.CharField(max_length=255)
     city = models.CharField(max_length=255)
     country = models.CharField(max_length=255, blank=True, null=True)
@@ -69,16 +69,19 @@ class VehicleImage(models.Model):
 
 
 class Chat(models.Model):
-    receiver = models.ForeignKey(
-        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='chatuser')
-    sender = models.ForeignKey(
-        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='sender')
+    chat_user_1 = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='chatuser1')
+    chat_user_2 = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='chatuser2')
 
 
 class ChatText(models.Model):
     chat = models.ForeignKey(Chat, on_delete=models.CASCADE)
     message = models.TextField()
     date = models.DateTimeField(auto_now_add=True)
+    author = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='texted_message')
+
 
 
 class Like(models.Model):
