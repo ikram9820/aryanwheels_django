@@ -68,20 +68,6 @@ class VehicleImage(models.Model):
                               validators=[validate_file_size])
 
 
-class Chat(models.Model):
-    chat_user_1 = models.ForeignKey(
-        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='chatuser1')
-    chat_user_2 = models.ForeignKey(
-        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='chatuser2')
-
-
-class ChatText(models.Model):
-    chat = models.ForeignKey(Chat, on_delete=models.CASCADE)
-    message = models.TextField()
-    date = models.DateTimeField(auto_now_add=True)
-    author = models.ForeignKey(
-        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='texted_message')
-
 
 
 class Like(models.Model):

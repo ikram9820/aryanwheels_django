@@ -68,7 +68,3 @@ class LikeAdmin(admin.ModelAdmin):
 @admin.register(models.LikedItem)
 class LikedItemAdmin(admin.ModelAdmin):
     list_select_related= ['like__user','vehicle']
-    
-@admin.register(models.Chat)
-class ChatAdmin(admin.ModelAdmin):
-    pass
